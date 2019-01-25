@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法2</title>
+  <style>
+    iframe {
+      width: 100%;
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+  <h1>采用iframe + document.domain 跨域</h1>
+  <p>此文件位于：fontEndService/www/demo2/index.html</p>
+  <p>此方法必须主域名相同，如 a.xxx.com 和 b.xxx.com</p>
+  <p>对同一台服务器不同的端口也适用</p>
+  <p>缺点：必须保证所有的domain都一样，同时，如果一个站点受到攻击，另一个站点也存在安全漏洞</p>
+  <h3>子域向父域传输的数据</h3>
+  <p id="msg">等待接受数据....</p>
+  <hr />
+  <iframe id="iframe" src="http://127.0.0.1:8888/demo2" frameborder="0"></iframe>
+  <script>
+    const msg = document.getElementById('msg');
+    // 这里用 var 或者直接用window.parentData，因为const 声明的变量不会挂载到window上
+    var parentData = "我是从父域传来的数据";
+    
+    // 设置domain
+    let parentDomain = window.location.hostname;
+    document.domain = parentDomain;
+    
+
+    // 定义一个函数，等待 iframe 中ajax数据接受完后调用
+    function notice(data) {
+      msg.innerText = "已接收数据：" + data;
+    }
+  </script>
+</body>
+</html>

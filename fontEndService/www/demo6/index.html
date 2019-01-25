@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法6</title>
+</head>
+<body>
+  <h1>设置服务器的cors实现跨域资源共享</h1>
+  <p>此文件位于：fontEndService/www/demo6/index.html</p>
+  <p>切记：本次需要打开server/app6.js</p>
+  <button id="btn">请求数据</button>
+  <h4>请求到的数据</h4>
+  <p id="msg">暂时没有数据！</p>
+  <script>
+    const btn = document.getElementById('btn');
+    const msg = document.getElementById('msg');
+
+    btn.onclick = () => {
+      myAjax('http://127.0.0.1:8889/api/getdata', (data) => {
+        msg.innerText = data;
+      });
+    }
+
+    // 封装的简陋ajax
+    function myAjax(url, cb) {
+      const xmlHttp = new XMLHttpRequest();
+      xmlHttp.open('get', url);
+      xmlHttp.send();
+      xmlHttp.onreadystatechange = () => {
+        if (xmlHttp.readyState === 4) {
+          if (xmlHttp.status === 200) {
+            cb(xmlHttp.response);
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

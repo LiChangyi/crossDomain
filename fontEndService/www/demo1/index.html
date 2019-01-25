@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法1</title>
+</head>
+<body>
+  <h1>JSONP 来解决跨域</h1>
+  <p>此文件位于：fontEndService/www/demo1/index.html</p>
+  <p>利用 script 标签可以加载不同域下的数据，把需要跨域的数据当js文件执行，从而得到相应数据。</p>
+  <p>缺点：只适用于GET请求</p>
+  <button id="btn" >点我获取数据</button>
+  <p id="msg"></p>
+  <script>
+    const btn = document.getElementById('btn');
+    const msg = document.getElementById('msg');
+    btn.onclick = () => {
+      jsonp('http://127.0.0.1:8888/api/getdata?jsonp=displayData');
+    }
+    function jsonp(url) {
+      let script = document.createElement('script');
+      script.setAttribute('src', url);
+      document.getElementsByTagName('head')[0].appendChild(script);
+    }
+    function displayData(data) {
+      msg.innerText = JSON.stringify(data);
+    }
+  </script>
+</body>
+</html>

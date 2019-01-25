@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法3</title>
+  <style>
+    iframe {
+      width: 100%;
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+  <h1>跨域方法3: 采用iframe + location.hash 跨域</h1>
+  <p>此文件位于：fontEndService/www/demo3/index.html</p>
+  <p>缺点：传递的消息在url中显示，不安全，数据量也很有限制</p>
+  <button id="btn">传递消息给iframe子域</button>
+  <h3>子域中传来的消息</h3>
+  <p id="msg"></p>
+  <hr />
+  <iframe id="iframe" src="http://127.0.0.1:8888/demo3" frameborder="0"></iframe>
+  <script>
+    const btn = document.getElementById('btn');
+    const msg = document.getElementById('msg');
+    let hash_url;
+    const iframe = document.getElementById('iframe');
+    btn.onclick = () => {
+      let src = iframe.src + '#message=我是父域中的文本';
+      iframe.src = src;
+    }
+
+    setInterval(() => {
+      const temp = location.hash;
+      if (hash_url !== temp) {
+        hash_url = temp;
+        msg.innerText = "当前消息:" + (dealHash(temp).message || '还没有消息');
+      }
+    }, 100)
+    
+    function dealHash(url) {
+      let [, dataStr] = url.split('#');
+      let obj = {};
+      if (!dataStr) return obj;
+      const dataArr = dataStr.split('&');
+      dataArr.forEach(item => {
+        const [key, val] = item.split('=');
+        obj[key] = decodeURI(val);
+      });
+      return obj;
+    }
+  </script>
+</body>
+</html>

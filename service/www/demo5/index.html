@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法5</title>
+</head>
+<body>
+  <h1>借助postMessage 解决跨域的服务端html</h1>
+  <p>此文件位于：service/www/demo5/index.html</p>
+  <script>
+    window.addEventListener('message', e => {
+      if (e.origin !== 'http://127.0.0.1:7777') return;
+      const data = e.data;
+      if (data === 'getData') {
+        myAjax('/api/getdata', notice);
+      }
+    })
+
+    function notice(data) {
+      // 向父级推送消息
+      top.postMessage(JSON.stringify(data), 'http://127.0.0.1:7777')
+    }
+
+    // 封装的简陋ajax
+    function myAjax(url, cb) {
+      const xmlHttp = new XMLHttpRequest();
+      xmlHttp.open('get', url);
+      xmlHttp.send();
+      xmlHttp.onreadystatechange = () => {
+        if (xmlHttp.readyState === 4) {
+          if (xmlHttp.status === 200) {
+            cb(xmlHttp.response);
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法5</title>
+  <style>
+    iframe {
+      width: 100%;
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+  <h1>借助postMessage 解决跨域</h1>
+  <p>此文件位于：fontEndService/www/demo5/index.html</p>
+  <button id="btn">获取数据</button>
+  <h4>获取到的数据</h4>
+  <p id="msg"></p>
+  <hr />
+  <iframe id="iframe" src="http://127.0.0.1:8888/demo5" frameborder="0"></iframe>
+  <script>
+    const iframe = document.getElementById('iframe');
+    const btn = document.getElementById('btn');
+    const msg = document.getElementById('msg');
+
+    btn.onclick = () => {
+      iframe.contentWindow.postMessage('getData', 'http://127.0.0.1:8888');
+    }
+
+    window.addEventListener('message', e => {
+      if (e.origin !== 'http://127.0.0.1:8888') return;
+      msg.innerText = e.data;
+    })
+  </script>
+</body>
+</html>

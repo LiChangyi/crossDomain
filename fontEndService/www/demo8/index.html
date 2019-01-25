@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法8</title>
+</head>
+<body>
+  <h1>通过使用 nodejs 中间件跨域代理</h1>
+  <p>此文件夹位置： fontEndService/demo8/index.html</p>
+  <p style="color:red;">
+    注：测试本方法的时候应该关闭 fontEndService/app.js 启动 fontEndService/app8.js
+  </p>
+  <button id="btn">点我获取数据</button>
+  <h3>ajax 获取的数据如下</h3>
+  <p id="msg"></p>
+  <script>
+      const btn = document.getElementById('btn');
+      const msg = document.getElementById('msg');
+  
+      btn.onclick = () => {
+        myAjax('/api/getdata', (data) => {
+          msg.innerText = data;
+        })
+      }
+  
+      // 封装的简陋ajax
+      function myAjax(url, cb) {
+        const xmlHttp = new XMLHttpRequest();
+        xmlHttp.open('get', url);
+        xmlHttp.send();
+        xmlHttp.onreadystatechange = () => {
+          if (xmlHttp.readyState === 4) {
+            if (xmlHttp.status === 200) {
+              cb(xmlHttp.response);
+            }
+          }
+        }
+      }
+    </script>
+</body>
+</html>

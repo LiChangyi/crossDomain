@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法3</title>
+</head>
+<body>
+  <h3>这里是跨域方法3， iframe + location.hash 的实现 服务端html</h3>
+  <p>此文件位于：service/www/demo3/index.html</p>
+  <button id="btn">传递消息给父域</button>
+  <h4>父域传来的消息</h4>
+  <p id="msg"></p>
+  <script>
+    const msg = document.getElementById('msg');
+    const btn = document.getElementById('btn');
+    let ifrProxy;
+    btn.onclick = () => {
+      myAjax('/api/getdata', notice);
+    }
+
+    function notice(data) {
+      try {
+        parent.location.hash = `message=${JSON.stringify(data)}`;
+      } catch (e) {
+        // ie、chrome 的安全机制无法修改parent.location.hash，
+        // 利用一个中间html 的代理修改location.hash
+        // 如A => B => C 其中，当前页面是B，AC在相同的一个域下。B 不能直接修改A 的 hash值故修改 C，让C 修改A
+        // 文件地址： fontEndService/www/demo3/proxy.html
+        if (!ifrProxy) {
+          ifrProxy = document.createElement('iframe');
+          ifrProxy.style.display = 'none';
+          document.body.appendChild(ifrProxy);
+        }
+        ifrProxy.src = `http://127.0.0.1:7777/demo3/proxy.html#message=${JSON.stringify(data)}`;
+      }
+    }
+
+    let hash_url;
+    setInterval(() => {
+      const temp = location.hash;
+      if (hash_url !== temp) {
+        hash_url = temp;
+        msg.innerText = "当前消息:" + (dealHash(temp).message || '还没有消息');
+      }
+    }, 100)
+    
+    function dealHash(url) {
+      let [, dataStr] = url.split('#');
+      let obj = {};
+      if (!dataStr) return obj;
+      const dataArr = dataStr.split('&');
+      dataArr.forEach(item => {
+        const [key, val] = item.split('=');
+        obj[key] = decodeURI(val);
+      });
+      return obj;
+    }
+
+    // 封装的简陋ajax
+    function myAjax(url, cb) {
+      const xmlHttp = new XMLHttpRequest();
+      xmlHttp.open('get', url);
+      xmlHttp.send();
+      xmlHttp.onreadystatechange = () => {
+        if (xmlHttp.readyState === 4) {
+          if (xmlHttp.status === 200) {
+            cb(xmlHttp.response);
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>我是服务器的静态html</title>
+</head>
+<body>
+  <h3>这里是跨域方法2， iframe + domain 实现的服务端html</h3>
+  <p>此文件位于：service/www/demo2/index.html</p>
+  <h4>父域传来的消息</h4>
+  <p id="msg"></p>
+  <button id="btn">请求数据</button>
+  <script>
+    const msg = document.getElementById('msg'); 
+    const btn = document.getElementById('btn');
+    
+    // 设置domain
+    let childDomain = document.domain;
+    document.domain = childDomain;
+    
+    // 将父域中的数据展示
+    msg.innerText = top.parentData;
+
+    btn.onclick = () => {
+      myAjax('/api/getdata', top.notice);
+    }
+    
+    // 封装的简陋ajax
+    function myAjax(url, cb) {
+      const xmlHttp = new XMLHttpRequest();
+      xmlHttp.open('get', url);
+      xmlHttp.send();
+      xmlHttp.onreadystatechange = () => {
+        if (xmlHttp.readyState === 4) {
+          if (xmlHttp.status === 200) {
+            cb(xmlHttp.response);
+          }
+        }
+      }
+    }
+  </script>
+</body>
+</html>

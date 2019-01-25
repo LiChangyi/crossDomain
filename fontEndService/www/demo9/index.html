@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法9</title>
+</head>
+<body>
+  <h1>采用 webSocket 协议进行跨域</h1>
+  <p>此文件位于 fontEndService/demo9/index.html</p>
+  <p style="color:red;">
+    注：验证此方法需要打开 service/app9.js 服务端
+  </p>
+  <button id="btn">获取数据</button>
+  <h3>获取到的数据</h3>
+  <p id="msg"></p>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.dev.js"></script>
+  <script>
+    const btn = document.getElementById('btn');
+    const msg = document.getElementById('msg');
+
+    const ioSocket = io.connect('http://127.0.0.1:8888');
+    ioSocket.on('connect', () => {
+      console.log('链接成功');
+      ioSocket.on('message', (data) => {
+        console.log(`收到数据 => ${data}`);
+        msg.innerText = `收到数据 => ${data}`;
+      });
+      ioSocket.on('disconnect', function() {
+        console.log('断开链接');
+      });
+    })
+
+    btn.onclick = () => {
+      ioSocket.send('getData');
+    }
+  </script>
+</body>
+</html>

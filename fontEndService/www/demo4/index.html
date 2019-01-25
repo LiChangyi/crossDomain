@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>跨域方法4</title>
+</head>
+<body>
+  <h1>跨域方法4: 采用iframe + window.name 跨域</h1>
+  <p>此文件位于：fontEndService/www/demo4/index.html</p>
+  <p>window.name大概可以存储2M的数据，同时安全也得到保证</p>
+  <p>缺点：由于设计到iframe的src改变，所以只适用于iframe隐藏的情况，也就是说，只适合加载纯数据</p>
+  <button id="btn">获取数据</button>
+  <h3>获取到的数据如下</h3>
+  <p id="msg">暂未获取数据</p>
+  <script>
+    const btn = document.getElementById('btn');
+    const msg = document.getElementById('msg');
+    let mark = false;
+
+    btn.onclick = () => {
+      let ifr = document.createElement('iframe');
+      ifr.src = "http://127.0.0.1:8888/demo4";
+      ifr.style.display = 'none';
+      document.body.appendChild(ifr);
+      ifr.onload = () => {
+        if (mark) {
+          msg.innerText = ifr.contentWindow.name;
+          document.body.removeChild(ifr);
+          mark = false;
+        } else {
+          mark = true;
+          ifr.contentWindow.location = "http://127.0.0.1:7777/demo4/proxy.html";
+        }
+      }
+    }
+  </script>
+</body>
+</html>
